@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "name": "JinRun TV 精选直播源",
+  "updatedAt": "2026-10-05T03:16:51Z",
+  "sources": [
+    {
+      "id": "iptv-org",
+      "name": "iptv-org 全集",
+      "url": "https://iptv-org.github.io/iptv/index.m3u"
+    },
+    {
+      "id": "hyqyk",
+      "name": "虎牙一起看",
+      "url": "https://sub.ottiptv.cc/huyayqk.m3u",
+      "userAgent": "okHttp/Mod-1.5.0.0"
+    },
+    {
+      "id": "dyqyk",
+      "name": "斗鱼一起看",
+      "url": "https://sub.ottiptv.cc/douyuyqk.m3u"
+    },
+    {
+      "id": "yylb",
+      "name": "YY轮播",
+      "url": "https://sub.ottiptv.cc/yylunbo.m3u"
+    },
+    {
+      "id": "other",
+      "name": "其他(F1/4K)",
+      "url": "https://kan.waiguotai.top/other.m3u"
+    },
+    {
+      "id": "iptv-m3u",
+      "name": "iptv.m3u",
+      "url": "https://live.ottiptv.cc/iptv.m3u?userid={{userid}}&sign={{sign}}&auth_token={{auth_token}}",
+      "userAgent": "okHttp/Mod-1.5.0.0"
+    }
+  ]
+}

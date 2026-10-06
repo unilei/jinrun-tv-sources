@@ -8,10 +8,25 @@ App 里填**一个**链接，就能加载下面全部直播源。
 App → 直播源 → 「订阅源包」，粘贴：
 
 ```
-https://raw.githubusercontent.com/unilei/jinrun-tv-sources/main/sources.json
+https://github.com/unilei/jinrun-tv-sources/blob/main/sources.json
 ```
 
+> **本仓库是私有的，别用 `raw.githubusercontent.com` 那条链接。**
+> `raw.githubusercontent.com` 对私有仓库一律返回 **404**，而且**不认令牌**——实测过。
+> 用上面的 `github.com/.../blob/...` 形式：App 检测到配了令牌时，会自动把它改写成
+> `https://api.github.com/repos/unilei/jinrun-tv-sources/contents/sources.json?ref=main`
+> 并带上 `Accept: application/vnd.github.raw`。三种写法都认：
+>
+> - `github.com/{owner}/{repo}/blob/{ref}/{path}`
+> - `raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}`（公开仓库用）
+> - `api.github.com/repos/{owner}/{repo}/contents/{path}?ref={ref}`
+>
+> 所以 App 里还要在「私密参数」里配一个 GitHub 令牌（classic PAT 勾 `repo`，
+> 或 fine-grained PAT 只给这一个仓库的 `Contents: Read`）。令牌只存在设备本地。
+
 之后改源只需要改这个仓库并 push，App 下次启动自动生效，**不需要重新装 APK**。
+热更新走的是条件请求：带上次的 `ETag`，源包没变时 GitHub 回 `304`（几十字节），
+不会把整个 JSON 重下一遍。
 
 ## 格式
 

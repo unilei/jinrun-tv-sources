@@ -8,25 +8,30 @@ App 里填**一个**链接，就能加载下面全部直播源。
 App → 直播源 → 「订阅源包」，粘贴：
 
 ```
-https://github.com/unilei/jinrun-tv-sources/blob/main/sources.json
+https://raw.githubusercontent.com/unilei/jinrun-tv-sources/main/sources.json
 ```
 
-> **本仓库是私有的，别用 `raw.githubusercontent.com` 那条链接。**
-> `raw.githubusercontent.com` 对私有仓库一律返回 **404**，而且**不认令牌**——实测过。
-> 用上面的 `github.com/.../blob/...` 形式：App 检测到配了令牌时，会自动把它改写成
-> `https://api.github.com/repos/unilei/jinrun-tv-sources/contents/sources.json?ref=main`
-> 并带上 `Accept: application/vnd.github.raw`。三种写法都认：
->
-> - `github.com/{owner}/{repo}/blob/{ref}/{path}`
-> - `raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}`（公开仓库用）
-> - `api.github.com/repos/{owner}/{repo}/contents/{path}?ref={ref}`
->
-> 所以 App 里还要在「私密参数」里配一个 GitHub 令牌（classic PAT 勾 `repo`，
-> 或 fine-grained PAT 只给这一个仓库的 `Contents: Read`）。令牌只存在设备本地。
+本仓库是**公开**的，所以这条链接**直接就能用，不需要任何令牌**——填一个链接就完事。
+（App 也认 `github.com/.../blob/...` 和 `api.github.com/.../contents/...` 两种写法，
+三种都能用；详见下面「三种链接写法」。）
 
 之后改源只需要改这个仓库并 push，App 下次启动自动生效，**不需要重新装 APK**。
 热更新走的是条件请求：带上次的 `ETag`，源包没变时 GitHub 回 `304`（几十字节），
 不会把整个 JSON 重下一遍。
+
+### 三种链接写法
+
+App 三种都认，按原样请求或改写：
+
+| 写法 | 公开仓库 | 私有仓库 |
+|---|---|---|
+| `raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}` | ✅ 直接用 | ❌ **一律 404，且不认令牌**（实测） |
+| `github.com/{owner}/{repo}/blob/{ref}/{path}` | ✅ | 配了令牌时改写为 Contents API |
+| `api.github.com/repos/{owner}/{repo}/contents/{path}?ref={ref}` | ✅ | 配了令牌时直接用 |
+
+**私有仓库必须走 `api.github.com`**（由 App 自动改写），并在 App 的「私密参数」里配一个
+GitHub 令牌：classic PAT 勾 `repo`，或 fine-grained PAT 只给这一个仓库的 `Contents: Read`。
+令牌只存在设备本地。**本仓库公开，用不到这一条。**
 
 ## 格式
 
@@ -82,4 +87,7 @@ python tools/export_sources_bundle.py --from-device -o ../sources-bundle/sources
 ```
 
 脚本会**自动把疑似凭证的查询参数替换成占位符**，所以默认产出是安全可公开的。
-`--keep-secrets` 会保留真值，**只在确认本仓库为私有时才用**。
+
+> ⚠️ **本仓库是公开的，`--keep-secrets` 在这里绝对不能用。**
+> 它会保留真值，一旦 push 就等于把付费订阅凭据公开，且**历史记录里删不干净**。
+> 该参数只在你自己另建的**私有**仓库上才成立。
